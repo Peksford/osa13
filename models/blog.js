@@ -1,6 +1,5 @@
-const { Sequelize, Model, DataTypes } = require('sequelize');
-
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+const { Model, DataTypes } = require('sequelize');
+const { sequelize } = require('../util/db');
 
 class Blog extends Model {}
 
@@ -25,7 +24,6 @@ Blog.init(
     },
     likes: {
       type: DataTypes.INTEGER,
-      defaultValue: 0,
     },
   },
   {
@@ -35,7 +33,5 @@ Blog.init(
     modelName: 'blog',
   }
 );
-
-Blog.sync();
 
 module.exports = Blog;
