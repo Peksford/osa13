@@ -1,9 +1,8 @@
 const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 const { Op } = require('sequelize')
-const { sequelize } = require('../util/db')
 
-const { Blog, User } = require('../models')
+const { Blog, User, ReadingList } = require('../models')
 const { SECRET } = require('../util/config')
 
 const tokenExtractor = (req, res, next) => {
@@ -22,26 +21,21 @@ const tokenExtractor = (req, res, next) => {
   next()
 }
 
-router.get('/', async (req, res) => {
-  //   const where = {};
-
-  //   if (req.query.search) {
-  //     where[Op.or] = [
-  //       { title: { [Op.substring]: req.query.search } },
-  //       { author: { [Op.substring]: req.query.search } },
-  //     ];
-  //   }
-
-  const blogs = await Blog.findAll({
-    attributes: [
-      'author',
-      [sequelize.fn('COUNT', sequelize.col('author')), 'blogs'],
-      [sequelize.fn('SUM', sequelize.col('likes')), 'likes'],
-    ],
-    group: 'author',
-    order: [['likes', 'DESC']],
-  })
-  res.json(blogs)
+router.post('/', tokenExtractor, async (req, res, next) => {
+  try {
+    console.log('What is the request', req.body.blog_id)
+    const user_id = req.body.user_id
+    const blog_id = req.body.blog_id
+    const read = await ReadingList.create({
+      userId: user_id,
+      blogId: blog_id,
+    })
+    await read.save()
+    res.json(read)
+  } catch (error) {
+    next(error)
+    // return res.status(400).json({ error });
+  }
 })
 
 module.exports = router

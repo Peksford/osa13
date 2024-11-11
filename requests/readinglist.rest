@@ -1,11 +1,8 @@
-POST http://localhost:3001/api/blogs
+POST http://localhost:3001/api/readinglists
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBla3NpQGdtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE3MzEzMzY1NTN9.lWwPSo-a7l8u9DWnbnY007aunCpUOJVbSDksjfGr9P0
 
 {
-    "author": "PekkisBoi",
-    "title": "title React codifhgjfg",
-    "url": "Url.fi",
-    "likes": 9,
-    "year": 2024
+    "blog_id": 1,
+    "user_id": 1
 }
