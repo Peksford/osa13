@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const { Op } = require('sequelize')
 
 const { User, Blog } = require('../models')
 
@@ -21,27 +22,40 @@ router.post('/', async (req, res, next) => {
   }
 })
 
-router.get('/:id', async (req, res) => {
-  const user = await User.findByPk(req.params.id, {
-    attributes: ['name', 'username'],
-    include: [
-      {
-        model: Blog,
-        as: 'readings',
-        attributes: {
-          exclude: ['createdAt', 'updatedAt', 'userId'],
+router.get('/:id', async (req, res, next) => {
+  const where = {}
+
+  try {
+    if (req.query.read === 'true') {
+      where.read = true
+    } else if (req.query.read === 'false') {
+      where.read = false
+    }
+
+    const user = await User.findByPk(req.params.id, {
+      attributes: ['name', 'username'],
+      include: [
+        {
+          model: Blog,
+          as: 'readings',
+          attributes: {
+            exclude: ['createdAt', 'updatedAt', 'userId'],
+          },
+          through: {
+            attributes: ['read', 'id'],
+            // where: { read: true },
+            where,
+          },
         },
-        through: {
-          attributes: ['read', 'id'],
-          // where: { read: true },
-        },
-      },
-    ],
-  })
-  if (user) {
-    res.json(user)
-  } else {
-    res.status(404).end()
+      ],
+    })
+    if (user) {
+      res.json(user)
+    } else {
+      res.status(404).end()
+    }
+  } catch (error) {
+    next(error)
   }
 })
 

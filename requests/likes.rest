@@ -1,6 +1,0 @@
-PUT http://localhost:3001/api/users/peksi
-Content-Type: application/json
-
-{
-    "username": "peksii"
-}
